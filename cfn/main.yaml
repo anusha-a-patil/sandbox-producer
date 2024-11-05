@@ -14,6 +14,11 @@ Parameters:
     Type: String
     Description: bucket yaml path
 
+#IAMRole Parameters
+  IAMRolePath:
+    Type: String
+    Description: IAM Role yaml path    
+
 Resources:
   s3buckets:
     Type: AWS::CloudFormation::Stack
@@ -23,7 +28,21 @@ Resources:
         EnvType: !Ref EnvType
         DomainName: !Ref DomainName
 
+  IAMRoles:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Ref IAMRolePath
+      Parameters:
+        EnvType: !Ref EnvType
+        DomainName: !Ref DomainName
+
 Outputs:
   TrustedBucketName:
     Description: The name of the Landing S3 bucket
-    Value: !GetAtt s3buckets.Outputs.TrustedBucketName        
+    Value: !GetAtt s3buckets.Outputs.TrustedBucketName
+
+  GlueCrawlerRoleArn:
+    Description: 'Glue Crawler IAM Role'
+    Value: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+    Export:
+      Name: GlueCrawlerRoleArn    

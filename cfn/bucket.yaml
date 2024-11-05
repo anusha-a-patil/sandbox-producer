@@ -15,7 +15,10 @@ Resources:
   TrustedS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: Sample-Trusted-Bucket
+      BucketName: 
+         Fn::Join:
+          - "-"
+          - [ "sanbox", !Ref DomainName, !Ref EnvType, "trusted"]
       BucketEncryption:
         ServerSideEncryptionConfiguration:
         - ServerSideEncryptionByDefault:
@@ -33,6 +36,24 @@ Resources:
           Value: !Ref EnvType
         - Key: 'DomainName'
           Value: !Ref DomainName
+
+  TrustedBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref TrustedS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowOnlyHttpsRequests
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource: 
+              - !Sub "arn:aws:s3:::${TrustedS3Bucket}"
+              - !Sub "arn:aws:s3:::${TrustedS3Bucket}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"          
 
 
 Outputs:

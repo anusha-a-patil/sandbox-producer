@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM Roles for services stack'
+
+Parameters:
+  EnvType:
+    Type: String
+    Default: "dev"
+    Description: The environment type (e.g., prod, dev)
+  DomainName:
+    Type: String
+    Description: The name of the domain
+
+Resources:
+  GlueCrawlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 
+         Fn::Join:
+          - "-"
+          - [ "sandbox", !Ref DomainName, !Ref EnvType, "crawler-role"]       
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - glue.amazonaws.com
+                - lakeformation.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                  - glue:*
+                  - lakeformation:*
+                Resource: '*'
+
+Outputs:
+  GlueCrawlerRoleArn:
+    Description: 'Name of the Crawler Role'
+    Value: !GetAtt GlueCrawlerRole.Arn
