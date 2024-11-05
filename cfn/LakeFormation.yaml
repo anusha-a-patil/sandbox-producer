@@ -1,0 +1,13 @@
+  LakeFormationDataLocation:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !Ref LakeFormationAdminRoleArn
+      Resource:
+        DataLocationResource:
+          CatalogId: !Ref AWS::AccountId  # Source account ID
+          ResourceArn: !Sub 'arn:aws:s3:::${S3BucketName}'  # S3 bucket ARN
+      Permissions:
+        - DATA_LOCATION_ACCESS
+      PermissionsWithGrantOption:
+        - DATA_LOCATION_ACCESS

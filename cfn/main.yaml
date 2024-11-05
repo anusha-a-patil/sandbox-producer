@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create an S3 bucket
+
+Parameters:
+#S3 Parameters  
+  EnvType:
+    Type: String
+    Default: "dev"
+    Description: The environment type (e.g., prod, dev)
+  DomainName:
+    Type: String
+    Description: The name of the domain
+  BucketFilePath:
+    Type: String
+    Description: bucket yaml path
+
+Resources:
+  s3buckets:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Ref BucketFilePath
+      Parameters:
+        EnvType: !Ref EnvType
+        DomainName: !Ref DomainName
+
+Outputs:
+  TrustedBucketName:
+    Description: The name of the Landing S3 bucket
+    Value: !GetAtt s3buckets.Outputs.TrustedBucketName        

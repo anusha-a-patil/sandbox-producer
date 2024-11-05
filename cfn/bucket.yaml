@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create an S3 bucket
+
+Parameters:
+#S3 Parameters
+  EnvType:
+    Type: String
+    Default: "dev"
+    Description: The environment type (e.g., prod, dev)
+  DomainName:
+    Type: String
+    Description: The name of the domain
+
+Resources:
+  TrustedS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: Sample-Trusted-Bucket
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256        
+      VersioningConfiguration:
+        Status: Enabled
+      AccessControl: Private
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30  
+      Tags:
+        - Key: 'EnvType'
+          Value: !Ref EnvType
+        - Key: 'DomainName'
+          Value: !Ref DomainName
+
+
+Outputs:
+  TrustedBucketName:
+    Description: The name of the Enriched S3 bucket
+    Value: !Ref TrustedS3Bucket
+
