@@ -79,17 +79,17 @@ Resources:
         GovernanceAccountId: !Ref GovernanceAccountId
         GovernanceDatabaseName: !Ref GovernanceDatabaseName
 
-  # LakeFormationStack:
-  #   Type: AWS::CloudFormation::Stack
-  #   DependsOn: s3buckets
-  #   DependsOn: IAMRoles
-  #   Properties:
-  #     TemplateURL: !Ref lfPath
-  #     Parameters:
-  #       DataLakeBucketName: !GetAtt s3buckets.Outputs.TrustedBucketName
-  #       CodeBuildRole: !Ref CodeBuildRole
-  #       GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
-  #       GovernanceAccountId: !Ref GovernanceAccountId
+  LakeFormationStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: s3buckets
+    DependsOn: IAMRoles
+    Properties:
+      TemplateURL: !Ref lfPath
+      Parameters:
+        DataLakeBucketName: !GetAtt s3buckets.Outputs.TrustedBucketName
+        CodeBuildRole: !Ref CodeBuildRole
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId
 
   # GlueCrawler:
   #   Type: AWS::CloudFormation::Stack
