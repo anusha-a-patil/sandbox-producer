@@ -33,7 +33,7 @@ Resources:
       Principal:
         DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
       Resource:
-        DataLocationResource:
+        DataLocation:
           CatalogId: !Ref GovernanceAccountId  #Registered Account ID
           ResourceArn: !Sub 'arn:aws:s3:::${DataLakeBucketName}'  #S3 bucket ARN
       Permissions:
