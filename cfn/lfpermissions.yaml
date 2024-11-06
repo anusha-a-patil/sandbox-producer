@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Nested stack for creating AWS Lake Formation resources'
+
+Parameters:
+  DatabaseName:
+    Type: String
+    Description: 'Name of the Glue Database to store the crawled data'
+  GlueDBResourceLink:
+    Type: String
+    Description: 'Resource Link of the Glue Database to store the crawled data'    
+  GlueCrawlerRoleArn:
+    Type: String
+    Description: 'Code Build Role Which is used to build all CF reosurces'
+
+Resources:
+
+ # Grant LF permissions to the crawler role to modify/view DB
+  DataLocationPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Description: Lake Formation Permissions for Crawler Role on Shared DB
+    Properties:
+      Resource:
+        Database:
+          CatalogId: !Ref AWS::AccountId 
+          Name: !Ref DatabaseName
+      Principal:
+        DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
+      Permissions:
+        - "CREATE_TABLE" 
+        - "ALTER" 
+        - "DESCRIBE"
+      PermissionsWithGrantOption: []
+
+  DataLocationPermissions:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Description: Lake Formation Permissions for Crawler Role on Shared DB's Resource Link
+    Properties:
+      Resource:
+        Database:
+          CatalogId: !Ref AWS::AccountId
+          Name: !Ref GlueDBResourceLink
+      Principal:
+        DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
+      Permissions:
+        - "DESCRIBE"
+      PermissionsWithGrantOption: []

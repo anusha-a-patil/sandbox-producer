@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Glue Crawler Nested Stack'
+
+Parameters:
+  EnvType:
+    Type: String
+    Description: The environment type (e.g., prod, dev)
+  DomainName:
+    Type: String
+    Description: The name of the domain
+  DatabaseName:
+    Type: String
+    Description: 'Name of the Glue Database to store the crawled data'
+  S3Target:
+    Type: String
+    Description: 'S3 bucket for the crawler to scan'
+  GlueCrawlerRoleArn:
+    Type: String
+    Description: 'Glue Crawler IAM Role Arn'
+  GovernanceAccountId:
+    Type: String
+    Description: 'Governance Account ID' 
+
+Resources:
+
+  GlueCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name:
+         Fn::Join:
+          - "-"
+          - [ "sandbox", !Ref DomainName, !Ref EnvType, "crawler"]       
+      Role: !Ref GlueCrawlerRoleArn
+      DatabaseName: !Ref DatabaseName
+      LakeFormationConfiguration: 
+        UseLakeFormationCredentials: true
+        AccountId: !Ref GovernanceAccountId #Registered Account ID
+      Targets:
+        S3Targets:
+           - Path: !Sub 's3://${S3Target}'
+      # SchemaChangePolicy:
+      #   UpdateBehavior: "UPDATE_IN_DATABASE"
+      #   DeleteBehavior: "LOG"
+
+Outputs:
+  CrawlerName:
+    Description: 'Name of the created Glue Crawler'
+    Value: !Ref GlueCrawler

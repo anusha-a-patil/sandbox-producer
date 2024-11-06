@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template to create a Resource Link to a shared database'
+
+Parameters:
+  GovernanceAccountId:
+    Type: String
+    Description: 'AWS Account ID of the Governance account that shared the database'
+  GovernanceDatabaseName:
+    Type: String
+    Description: 'Name of the shared source Glue Database'
+
+Resources:
+  ResourceLink:
+    Type: AWS::Glue::Database
+    Description: Resource link to the Glue database by Governance
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Sub '${GovernanceDatabaseName}-link'
+        Description: !Sub "Resource link to ${GovernanceDatabaseName} in account ${GovernanceAccountId}"
+        TargetDatabase:
+          CatalogId: !Ref GovernanceAccountId
+          DatabaseName: !Ref GovernanceDatabaseName
+        CreateTableDefaultPermissions: []
+
+Outputs:
+  ResourceLink:
+    Description: 'Resource Link of the shared Glue Database'
+    Value: !Ref ResourceLink        

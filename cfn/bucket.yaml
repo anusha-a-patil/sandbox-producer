@@ -10,6 +10,9 @@ Parameters:
   DomainName:
     Type: String
     Description: The name of the domain
+  LFServiceRoleArn:
+    Type: String
+    Description: Lake Formation Register Location Service Role ARN    
 
 Resources:
   TrustedS3Bucket:
@@ -53,7 +56,18 @@ Resources:
               - !Sub "arn:aws:s3:::${TrustedS3Bucket}/*"
             Condition:
               Bool:
-                aws:SecureTransport: "false"          
+                aws:SecureTransport: "false"
+          - Sid: Allow LF Service Role to access S3 Bucket
+            Effect: Allow
+            Principal: !Ref LFServiceRoleArn
+            Action: 
+              - s3:PutObject
+              - s3:Get*
+              - s3:DeleteObject
+              - s3:ListBucket            
+            Resource: 
+              - !Sub "arn:aws:s3:::${TrustedS3Bucket}"
+              - !Sub "arn:aws:s3:::${TrustedS3Bucket}/*"                    
 
 
 Outputs:

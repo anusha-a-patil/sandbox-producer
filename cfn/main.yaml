@@ -6,18 +6,42 @@ Parameters:
   EnvType:
     Type: String
     Default: "dev"
-    Description: The environment type (e.g., prod, dev)
+    Description: 'The environment type (e.g., prod, dev)'
   DomainName:
     Type: String
-    Description: The name of the domain
+    Description: 'The name of the domain'
   BucketFilePath:
     Type: String
-    Description: bucket yaml path
+    Description: 'bucket yaml path'
 
+#LF Parameters    
+  LFServiceRoleArn:
+    Type: String
+    Description: 'Lake Formation Register Location Service Role ARN'
+    Default: "arn:aws:iam::903432419063:role/datamesh-stack-IAMRoles-R-LFRegisterLocationService-Q7UNtXXEF4XK"
 #IAMRole Parameters
   IAMRolePath:
     Type: String
-    Description: IAM Role yaml path    
+    Description: 'IAM Role yaml path'
+
+#ResourceLink Parameters
+  GovernanceAccountId:
+    Type: String
+    Description: 'Governance Account ID'
+    Default: "903432419063"
+  GovernanceDatabaseName:
+    Type: String
+    Description: 'Governance Database Name'
+    Default: "sandbox---db"    
+  ResourcelinkPath:
+    Type: String
+    Description: 'Resource Link yaml path Parameters'
+
+#LF Parameters
+  CodeBuildRole:
+    Type: String
+    Description: 'Code Build Role Which is used to build all CF reosurces'
+    Default: "codebuild-sandbox-producer-service-role"    
 
 Resources:
   s3buckets:
@@ -27,6 +51,7 @@ Resources:
       Parameters:
         EnvType: !Ref EnvType
         DomainName: !Ref DomainName
+        LFServiceRoleArn: !Ref LFServiceRoleArn
 
   IAMRoles:
     Type: AWS::CloudFormation::Stack
@@ -35,6 +60,48 @@ Resources:
       Parameters:
         EnvType: !Ref EnvType
         DomainName: !Ref DomainName
+
+  GlueDBResourceLink:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Ref ResourcelinkPath
+      Parameters:
+        GovernanceAccountId: !Ref GovernanceAccountId
+        GovernanceDatabaseName: !Ref GovernanceDatabaseName
+
+  LakeFormationStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: s3buckets
+    DependsOn: IAMRoles
+    Properties:
+      TemplateURL: !Ref lfPath
+      Parameters:
+        DataLakeBucketName: !GetAtt s3buckets.Outputs.TrustedBucketName
+        CodeBuildRole: !Ref CodeBuildRole
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId
+
+  GlueCrawler:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: IAMRoles
+    Properties:
+      TemplateURL: !Ref GlueCrawlerPath
+      Parameters:
+        EnvType: !Ref EnvType
+        DomainName: !Ref DomainName
+        DatabaseName: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
+        S3Target: !GetAtt s3buckets.Outputs.TrustedBucketName
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId
+
+  LFPermissions:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Ref lfpermissionsPath
+      Parameters:
+        DatabaseName: !Ref GovernanceDatabaseName
+        GlueDBResourceLink: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
 
 Outputs:
   TrustedBucketName:
@@ -45,4 +112,8 @@ Outputs:
     Description: 'Glue Crawler IAM Role'
     Value: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
     Export:
-      Name: GlueCrawlerRoleArn    
+      Name: GlueCrawlerRoleArn
+
+  GlueDBResourceLink:
+    Description: 'Resource Link of the shared Glue Database'
+    Value: !GetAtt GlueDBResourceLink.Outputs.ResourceLink

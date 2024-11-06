@@ -1,13 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Nested stack for creating AWS Lake Formation resources'
+
+Parameters:
+  CodeBuildRole:
+    Type: String
+    Description: 'Code Build Role Which is used to build all CF reosurces'
+  GovernanceAccountId:
+    Type: String
+    Description: 'Governance Account ID'
+  GlueCrawlerRoleArn:
+    Type: String
+    Description: 'IAM Role of Glue Crawler'
+  DataLakeBucketName:
+    Type: String
+    Description: 'Name of the S3 bucket to use as the data lake'
+
+Resources:
+  LakeFormationDataLakeSettings:
+    Type: AWS::LakeFormation::DataLakeSettings
+    Description: Adding Data Lake Admins    
+    Properties: 
+      Admins: 
+        - DataLakePrincipalIdentifier: !Sub 'arn:aws:iam::${AWS::AccountId}:role/iesawsapac-sandbox' #Role used by you to access the account
+        - DataLakePrincipalIdentifier: !Sub 'arn:aws:iam::${AWS::AccountId}:role/service-role/${CodeBuildRole}'
+      CreateDatabaseDefaultPermissions: []  #Empty list to uncheck default settings
+      CreateTableDefaultPermissions: []  #Empty list to uncheck default settings
+
   LakeFormationDataLocation:
     Type: AWS::LakeFormation::PrincipalPermissions
+    Description: "Grants DATA_LOCATION_ACCESS to the Glue Crawler role for the data lake bucket"    
     Properties:
       Principal:
-        DataLakePrincipalIdentifier: !Ref LakeFormationAdminRoleArn
+        DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
       Resource:
         DataLocationResource:
-          CatalogId: !Ref AWS::AccountId  # Source account ID
-          ResourceArn: !Sub 'arn:aws:s3:::${S3BucketName}'  # S3 bucket ARN
+          CatalogId: !Ref GovernanceAccountId  #Registered Account ID
+          ResourceArn: !Sub 'arn:aws:s3:::${DataLakeBucketName}'  #S3 bucket ARN
       Permissions:
         - DATA_LOCATION_ACCESS
-      PermissionsWithGrantOption:
-        - DATA_LOCATION_ACCESS
+      PermissionsWithGrantOption: []
