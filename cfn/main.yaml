@@ -48,10 +48,10 @@ Parameters:
   lfpermissionsPath:
     Type: String
     Description: 'LakeFormation Permissions yaml path Parameters'         
-#Glue Crawler Parameters
-  # GlueCrawlerPath:
-  #   Type: String
-  #   Description: 'Crawler yaml path Parameters'       
+Glue Crawler Parameters
+  GlueCrawlerPath:
+    Type: String
+    Description: 'Crawler yaml path Parameters'       
 
 Resources:
   s3buckets:
@@ -91,19 +91,19 @@ Resources:
         GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
         GovernanceAccountId: !Ref GovernanceAccountId
 
-  # GlueCrawler:
-  #   Type: AWS::CloudFormation::Stack
-  #   DependsOn: IAMRoles
-  #   DependsOn: LakeFormationStack    
-  #   Properties:
-  #     TemplateURL: !Ref GlueCrawlerPath
-  #     Parameters:
-  #       EnvType: !Ref EnvType
-  #       DomainName: !Ref DomainName
-  #       DatabaseName: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
-  #       S3Target: !GetAtt s3buckets.Outputs.TrustedBucketName
-  #       GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
-  #       GovernanceAccountId: !Ref GovernanceAccountId
+  GlueCrawler:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: IAMRoles
+    DependsOn: LakeFormationStack    
+    Properties:
+      TemplateURL: !Ref GlueCrawlerPath
+      Parameters:
+        EnvType: !Ref EnvType
+        DomainName: !Ref DomainName
+        DatabaseName: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
+        S3Target: !GetAtt s3buckets.Outputs.TrustedBucketName
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId
 
   LFPermissions:
     Type: AWS::CloudFormation::Stack
