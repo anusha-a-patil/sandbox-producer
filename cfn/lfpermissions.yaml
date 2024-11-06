@@ -11,6 +11,9 @@ Parameters:
   GlueCrawlerRoleArn:
     Type: String
     Description: 'Code Build Role Which is used to build all CF reosurces'
+  GovernanceAccountId:
+    Type: String
+    Description: 'Governance Account ID'    
 
 Resources:
 
@@ -21,7 +24,7 @@ Resources:
     Properties:
       Resource:
         Database:
-          CatalogId: !Ref AWS::AccountId 
+          CatalogId: !Ref GovernanceAccountId #Source Account ID
           Name: !Ref DatabaseName
       Principal:
         DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
@@ -38,7 +41,7 @@ Resources:
     Properties:
       Resource:
         Database:
-          CatalogId: !Ref AWS::AccountId
+          CatalogId: !Ref AWS::AccountId #Source Account ID
           Name: !Ref GlueDBResourceLink
       Principal:
         DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
