@@ -41,7 +41,13 @@ Parameters:
   CodeBuildRole:
     Type: String
     Description: 'Code Build Role Which is used to build all CF reosurces'
-    Default: "codebuild-sandbox-producer-service-role" 
+    Default: "codebuild-sandbox-producer-service-role"
+  lfPath:
+    Type: String
+    Description: 'LakeFormation yaml path Parameters' 
+  lfpermissionsPath:
+    Type: String
+    Description: 'LakeFormation Permissions yaml path Parameters'         
 #Glue Crawler Parameters
   GlueCrawlerPath:
     Type: String
