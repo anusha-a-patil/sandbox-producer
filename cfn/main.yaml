@@ -113,6 +113,7 @@ Resources:
         DatabaseName: !Ref GovernanceDatabaseName
         GlueDBResourceLink: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
         GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId        
 
 Outputs:
   TrustedBucketName:
