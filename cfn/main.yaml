@@ -94,6 +94,7 @@ Resources:
   GlueCrawler:
     Type: AWS::CloudFormation::Stack
     DependsOn: IAMRoles
+    DependsOn: LakeFormationStack    
     Properties:
       TemplateURL: !Ref GlueCrawlerPath
       Parameters:
