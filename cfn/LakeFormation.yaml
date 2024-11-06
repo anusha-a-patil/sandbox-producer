@@ -5,15 +5,15 @@ Parameters:
   CodeBuildRole:
     Type: String
     Description: 'Code Build Role Which is used to build all CF reosurces'
-  # GovernanceAccountId:
-  #   Type: String
-  #   Description: 'Governance Account ID'
-  # GlueCrawlerRoleArn:
-  #   Type: String
-  #   Description: 'IAM Role of Glue Crawler'
-  # DataLakeBucketName:
-  #   Type: String
-  #   Description: 'Name of the S3 bucket to use as the data lake'
+  GovernanceAccountId:
+    Type: String
+    Description: 'Governance Account ID'
+  GlueCrawlerRoleArn:
+    Type: String
+    Description: 'IAM Role of Glue Crawler'
+  DataLakeBucketName:
+    Type: String
+    Description: 'Name of the S3 bucket to use as the data lake'
 
 Resources:
   LakeFormationDataLakeSettings:
@@ -26,16 +26,16 @@ Resources:
       CreateDatabaseDefaultPermissions: []  #Empty list to uncheck default settings
       CreateTableDefaultPermissions: []  #Empty list to uncheck default settings
 
-  # LakeFormationDataLocation:
-  #   Type: AWS::LakeFormation::PrincipalPermissions
-  #   Description: "Grants DATA_LOCATION_ACCESS to the Glue Crawler role for the data lake bucket"    
-  #   Properties:
-  #     Principal:
-  #       DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
-  #     Resource:
-  #       DataLocationResource:
-  #         CatalogId: !Ref GovernanceAccountId  #Registered Account ID
-  #         ResourceArn: !Sub 'arn:aws:s3:::${DataLakeBucketName}'  #S3 bucket ARN
-  #     Permissions:
-  #       - DATA_LOCATION_ACCESS
-  #     PermissionsWithGrantOption: []
+  LakeFormationDataLocation:
+    Type: AWS::LakeFormation::PrincipalPermissions
+    Description: "Grants DATA_LOCATION_ACCESS to the Glue Crawler role for the data lake bucket"    
+    Properties:
+      Principal:
+        DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
+      Resource:
+        DataLocationResource:
+          CatalogId: !Ref GovernanceAccountId  #Registered Account ID
+          ResourceArn: !Sub 'arn:aws:s3:::${DataLakeBucketName}'  #S3 bucket ARN
+      Permissions:
+        - DATA_LOCATION_ACCESS
+      PermissionsWithGrantOption: []
