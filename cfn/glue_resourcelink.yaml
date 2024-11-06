@@ -17,7 +17,6 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
         Name: !Sub '${GovernanceDatabaseName}-link'
-        Description: !Sub "Resource link to ${GovernanceDatabaseName} in account ${GovernanceAccountId}"
         TargetDatabase:
           CatalogId: !Ref GovernanceAccountId
           DatabaseName: !Ref GovernanceDatabaseName
