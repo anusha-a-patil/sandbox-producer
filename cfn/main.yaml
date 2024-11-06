@@ -48,7 +48,7 @@ Parameters:
   lfpermissionsPath:
     Type: String
     Description: 'LakeFormation Permissions yaml path Parameters'         
-Glue Crawler Parameters
+#Glue Crawler Parameters
   GlueCrawlerPath:
     Type: String
     Description: 'Crawler yaml path Parameters'       
