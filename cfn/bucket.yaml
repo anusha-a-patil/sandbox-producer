@@ -59,7 +59,8 @@ Resources:
                 aws:SecureTransport: "false"
           - Sid: Allow LF Service Role to access S3 Bucket
             Effect: Allow
-            Principal: !Ref LFServiceRoleArn
+            Principal:
+              AWS: !Ref LFServiceRoleArn            
             Action: 
               - s3:PutObject
               - s3:Get*
