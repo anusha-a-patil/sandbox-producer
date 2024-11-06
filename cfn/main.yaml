@@ -38,20 +38,20 @@ Parameters:
     Description: 'Resource Link yaml path Parameters'
 
 #LF Parameters
-  CodeBuildRole:
-    Type: String
-    Description: 'Code Build Role Which is used to build all CF reosurces'
-    Default: "codebuild-sandbox-producer-service-role"
-  lfPath:
-    Type: String
-    Description: 'LakeFormation yaml path Parameters' 
+  # CodeBuildRole:
+  #   Type: String
+  #   Description: 'Code Build Role Which is used to build all CF reosurces'
+  #   Default: "codebuild-sandbox-producer-service-role"
+  # lfPath:
+  #   Type: String
+  #   Description: 'LakeFormation yaml path Parameters' 
   lfpermissionsPath:
     Type: String
     Description: 'LakeFormation Permissions yaml path Parameters'         
 #Glue Crawler Parameters
-  GlueCrawlerPath:
-    Type: String
-    Description: 'Crawler yaml path Parameters'       
+  # GlueCrawlerPath:
+  #   Type: String
+  #   Description: 'Crawler yaml path Parameters'       
 
 Resources:
   s3buckets:
@@ -79,31 +79,31 @@ Resources:
         GovernanceAccountId: !Ref GovernanceAccountId
         GovernanceDatabaseName: !Ref GovernanceDatabaseName
 
-  LakeFormationStack:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: s3buckets
-    DependsOn: IAMRoles
-    Properties:
-      TemplateURL: !Ref lfPath
-      Parameters:
-        DataLakeBucketName: !GetAtt s3buckets.Outputs.TrustedBucketName
-        CodeBuildRole: !Ref CodeBuildRole
-        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
-        GovernanceAccountId: !Ref GovernanceAccountId
+  # LakeFormationStack:
+  #   Type: AWS::CloudFormation::Stack
+  #   DependsOn: s3buckets
+  #   DependsOn: IAMRoles
+  #   Properties:
+  #     TemplateURL: !Ref lfPath
+  #     Parameters:
+  #       DataLakeBucketName: !GetAtt s3buckets.Outputs.TrustedBucketName
+  #       CodeBuildRole: !Ref CodeBuildRole
+  #       GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+  #       GovernanceAccountId: !Ref GovernanceAccountId
 
-  GlueCrawler:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: IAMRoles
-    DependsOn: LakeFormationStack    
-    Properties:
-      TemplateURL: !Ref GlueCrawlerPath
-      Parameters:
-        EnvType: !Ref EnvType
-        DomainName: !Ref DomainName
-        DatabaseName: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
-        S3Target: !GetAtt s3buckets.Outputs.TrustedBucketName
-        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
-        GovernanceAccountId: !Ref GovernanceAccountId
+  # GlueCrawler:
+  #   Type: AWS::CloudFormation::Stack
+  #   DependsOn: IAMRoles
+  #   DependsOn: LakeFormationStack    
+  #   Properties:
+  #     TemplateURL: !Ref GlueCrawlerPath
+  #     Parameters:
+  #       EnvType: !Ref EnvType
+  #       DomainName: !Ref DomainName
+  #       DatabaseName: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
+  #       S3Target: !GetAtt s3buckets.Outputs.TrustedBucketName
+  #       GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+  #       GovernanceAccountId: !Ref GovernanceAccountId
 
   LFPermissions:
     Type: AWS::CloudFormation::Stack
