@@ -15,7 +15,7 @@ Parameters:
 Resources:
 
  # Grant LF permissions to the crawler role to modify/view DB
-  DataLocationPermissions:
+  LFPermissionsDB:
     Type: AWS::LakeFormation::PrincipalPermissions
     Description: Lake Formation Permissions for Crawler Role on Shared DB
     Properties:
@@ -31,7 +31,8 @@ Resources:
         - "DESCRIBE"
       PermissionsWithGrantOption: []
 
-  DataLocationPermissions:
+ # Grant LF permissions to the crawler role to modify/view DB Link
+  LFPermissionsDBlink:
     Type: AWS::LakeFormation::PrincipalPermissions
     Description: Lake Formation Permissions for Crawler Role on Shared DB's Resource Link
     Properties:
