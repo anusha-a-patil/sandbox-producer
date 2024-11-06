@@ -44,7 +44,7 @@ phases:
         bucketurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/bucket.yaml
         dbresourcelinkurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/glue_resourcelink.yaml
         lfpermissionsurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/lfpermissions.yaml   
-        lfurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/lakeformation.yaml                 
+        lfurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/lakeformation.yaml
         aws cloudformation deploy \
           --template-file $cfnfile \
           --stack-name datamesh-stack \
