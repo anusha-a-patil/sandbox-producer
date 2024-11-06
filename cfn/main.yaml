@@ -41,7 +41,11 @@ Parameters:
   CodeBuildRole:
     Type: String
     Description: 'Code Build Role Which is used to build all CF reosurces'
-    Default: "codebuild-sandbox-producer-service-role"    
+    Default: "codebuild-sandbox-producer-service-role" 
+#Glue Crawler Parameters
+  GlueCrawlerPath:
+    Type: String
+    Description: 'Crawler yaml path Parameters'       
 
 Resources:
   s3buckets:
