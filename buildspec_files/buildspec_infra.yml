@@ -35,20 +35,25 @@ phases:
         gluecrawlerfilename="glue_crawler.yaml"
         gluecrawlerfile=$CODEBUILD_SRC_DIR/cfn/"${gluecrawlerfilename}"
         echo $gluecrawlerfile
+        lfpermissionsfilename="lfpermissions.yaml"
+        lfpermissionsfile=$CODEBUILD_SRC_DIR/cfn/"${lfpermissionsfilename}"
+        echo $lfpermissionsfile
         aws s3 cp $iamrolefile s3://mycicd-bucket-ap3/cicd-files/
         aws s3 cp $bucketfile s3://mycicd-bucket-ap3/cicd-files/
         aws s3 cp $dbresourcelinkfile s3://mycicd-bucket-ap3/cicd-files/
         aws s3 cp $lffile s3://mycicd-bucket-ap3/cicd-files/
         aws s3 cp $gluecrawlerfile s3://mycicd-bucket-ap3/cicd-files/
+        aws s3 cp $lfpermissionsfile s3://mycicd-bucket-ap3/cicd-files/        
         iamroleurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/iam_roles.yaml
         bucketurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/bucket.yaml
         dbresourcelinkurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/glue_resourcelink.yaml  
         lfurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/LakeFormation.yaml
-        GlueCrawlerurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/glue_crawler.yaml   
+        GlueCrawlerurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/glue_crawler.yaml
+        lfpermissionsurl=https://s3.amazonaws.com/mycicd-bucket-ap3/cicd-files/lfpermissions.yaml         
         aws cloudformation deploy \
           --template-file $cfnfile \
           --stack-name datamesh-stack \
-          --parameter-overrides EnvType="${env}" DomainName="${domain}" IAMRolePath="${iamroleurl}" BucketFilePath="${bucketurl}" ResourcelinkPath="${dbresourcelinkurl}" lfPath="${lfurl}" GlueCrawlerPath="${GlueCrawlerurl}" \
+          --parameter-overrides EnvType="${env}" DomainName="${domain}" IAMRolePath="${iamroleurl}" BucketFilePath="${bucketurl}" ResourcelinkPath="${dbresourcelinkurl}" lfpermissionsPath="${lfpermissionsurl}" lfPath="${lfurl}" GlueCrawlerPath="${GlueCrawlerurl}" \
           --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
   post_build:
     commands:

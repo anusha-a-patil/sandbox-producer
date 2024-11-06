@@ -45,9 +45,9 @@ Parameters:
   lfPath:
     Type: String
     Description: 'LakeFormation yaml path Parameters' 
-  # lfpermissionsPath:
-  #   Type: String
-  #   Description: 'LakeFormation Permissions yaml path Parameters'         
+  lfpermissionsPath:
+    Type: String
+    Description: 'LakeFormation Permissions yaml path Parameters'         
 #Glue Crawler Parameters
   GlueCrawlerPath:
     Type: String
@@ -105,15 +105,15 @@ Resources:
         GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
         GovernanceAccountId: !Ref GovernanceAccountId
 
-  # LFPermissions:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: !Ref lfpermissionsPath
-  #     Parameters:
-  #       DatabaseName: !Ref GovernanceDatabaseName
-  #       GlueDBResourceLink: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
-  #       GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
-  #       GovernanceAccountId: !Ref GovernanceAccountId
+  LFPermissions:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Ref lfpermissionsPath
+      Parameters:
+        DatabaseName: !Ref GovernanceDatabaseName
+        GlueDBResourceLink: !GetAtt GlueDBResourceLink.Outputs.ResourceLink
+        GlueCrawlerRoleArn: !GetAtt IAMRoles.Outputs.GlueCrawlerRoleArn
+        GovernanceAccountId: !Ref GovernanceAccountId
 
 Outputs:
   TrustedBucketName:
