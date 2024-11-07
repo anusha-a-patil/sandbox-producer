@@ -24,7 +24,7 @@ Resources:
     Properties:
       Resource:
         Database:
-          CatalogId: !Ref GovernanceAccountId #Source Account ID
+          CatalogId: !Ref GovernanceAccountId #Source Account ID 
           Name: !Ref DatabaseName
       Principal:
         DataLakePrincipalIdentifier: !Ref GlueCrawlerRoleArn
